@@ -4,6 +4,19 @@ Handoff document for sequential agents. Execute **one step per agent**. Do not r
 
 Baseline before any refactor: `./gradlew test` must be green.
 
+## Local build environment
+
+The default JDK on this host is 25; Gradle 7.4 cannot run on it. Every Gradle command needs the JDK 17 the baseline was measured with:
+
+```bash
+export JAVA_HOME=/tmp/jdk17-temurin
+./gradlew test
+```
+
+`/tmp` does not survive a reboot — if that path is gone, install any JDK 11 or 17 and use it instead.
+
+`./gradlew spotlessApply` does **not** work on JDK 17 (google-java-format needs `--add-exports` into JDK compiler internals). Until someone adds those flags to the build, match [google-java-format](https://github.com/google/google-java-format) by hand: 2-space indent, 100-column lines, imports in one ASCII-sorted block with statics first.
+
 ## Constraints
 
 The assignment text mentions JPA/Spring Data. **This repo has no JPA.** Persistence is MyBatis + SQLite (`build.gradle`, `MyBatis*Repository`). Treat **MyBatis as the persistence adapter**. Do **not** migrate to JPA.
