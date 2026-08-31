@@ -1,6 +1,6 @@
 package io.spring.core.user;
 
-import io.spring.Util;
+import io.spring.core.shared.Strings;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,23 +27,23 @@ public class User {
   }
 
   public void update(String email, String username, String password, String bio, String image) {
-    if (!Util.isEmpty(email)) {
+    if (!Strings.isEmpty(email)) {
       this.email = email;
     }
 
-    if (!Util.isEmpty(username)) {
+    if (!Strings.isEmpty(username)) {
       this.username = username;
     }
 
-    if (!Util.isEmpty(password)) {
+    if (!Strings.isEmpty(password)) {
       this.password = password;
     }
 
-    if (!Util.isEmpty(bio)) {
+    if (!Strings.isEmpty(bio)) {
       this.bio = bio;
     }
 
-    if (!Util.isEmpty(image)) {
+    if (!Strings.isEmpty(image)) {
       this.image = image;
     }
   }

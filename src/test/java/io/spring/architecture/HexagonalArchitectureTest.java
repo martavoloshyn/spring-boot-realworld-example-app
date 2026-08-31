@@ -51,7 +51,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V1 — Spring on domain ports; see architecture/violations.md")
   @Test
   void v1_core_must_not_depend_on_spring() {
     noClasses()
@@ -64,7 +63,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V2 — Domain depends on non-domain helper; see architecture/violations.md")
   @Test
   void v2_core_must_not_depend_on_root_util() {
     noClasses()

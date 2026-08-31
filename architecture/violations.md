@@ -10,40 +10,37 @@ Status values: `open` · `optional` · `fixed`.
 
 ## V1 — Spring on domain ports
 
-**Status:** open  
-**ArchUnit:** `v1_core_must_not_depend_on_spring`
+**Status:** fixed (step 2)  
+**ArchUnit:** `v1_core_must_not_depend_on_spring` — **enabled**
 
 Spring stereotypes on `io.spring.core` interfaces:
 
-| Type | Annotation | File |
-| --- | --- | --- |
-| `JwtService` | `@Service` | `src/main/java/io/spring/core/service/JwtService.java` |
-| `UserRepository` | `@Repository` | `src/main/java/io/spring/core/user/UserRepository.java` |
+| Type | Annotation | File | Fix |
+| --- | --- | --- | --- |
+| `JwtService` | `@Service` | `src/main/java/io/spring/core/service/JwtService.java` | annotation removed; bean still comes from `@Component DefaultJwtService` |
+| `UserRepository` | `@Repository` | `src/main/java/io/spring/core/user/UserRepository.java` | annotation removed; bean still comes from `@Repository MyBatisUserRepository` |
 
 Already annotation-free (not this id): `ArticleRepository`, `CommentRepository`, `ArticleFavoriteRepository`.
 
-Target (enabled in step 2): `io.spring.core..` must not depend on `org.springframework..`.
+`io.spring.core..` no longer depends on `org.springframework..`. `JwtService` still *lives* in `core` — that is V6, closed in step 4.
 
 ---
 
 ## V2 — Domain depends on non-domain helper
 
-**Status:** open  
-**ArchUnit:** `v2_core_must_not_depend_on_root_util`
+**Status:** fixed (step 2)  
+**ArchUnit:** `v2_core_must_not_depend_on_root_util` — **enabled**
 
-`User` and `Article` import root `io.spring.Util`:
+`User` and `Article` imported root `io.spring.Util`.
 
-- `src/main/java/io/spring/core/user/User.java`
-- `src/main/java/io/spring/core/article/Article.java`
-
-Target: entities must not import `io.spring.Util` (move `isEmpty` into domain in step 2).
+`isEmpty` moved into the domain as `io.spring.core.shared.Strings`; `User` and `Article` call `Strings.isEmpty`. `io.spring.Util` had no other callers and was deleted, so the bootstrap package no longer holds domain logic.
 
 ---
 
 ## V3 — Lombok on domain entities (optional)
 
-**Status:** optional — do not block later steps  
-**ArchUnit:** `v3_core_must_not_depend_on_lombok`
+**Status:** optional — not taken in step 2, do not block later steps  
+**ArchUnit:** `v3_core_must_not_depend_on_lombok` — still `@Disabled`
 
 Assignment does not require removing Lombok. Lombok annotations are source-retention, so ArchUnit on class files may not see them; the rule still documents the purity target.
 
@@ -105,7 +102,7 @@ Target (step 3): no `*Repository` / `AuthorizationService` on controllers and mu
 **Status:** open  
 **ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security`
 
-- `JwtService` lives in `core` **and** is a Spring `@Service` (`src/main/java/io/spring/core/service/JwtService.java`). Implementation: `io.spring.infrastructure.service.DefaultJwtService`.
+- `JwtService` still lives in `core` (`src/main/java/io/spring/core/service/JwtService.java`); its `@Service` annotation is gone since step 2 (V1), but the type itself must move to adapter-web. Implementation: `io.spring.infrastructure.service.DefaultJwtService`.
 - `PasswordEncoder` (Spring Security) is injected into application `UserService`.
 - Domain `User` is the Spring Security **principal**. That is OK only if Security types stay in adapters (`@AuthenticationPrincipal`, `JwtTokenFilter`, `SecurityUtil`). `User` itself has no Security imports.
 
@@ -137,12 +134,16 @@ MyBatis read XML / `@Mapper`s map into `io.spring.application.data.*` (and pagin
 
 ---
 
-## Already true (ArchUnit enabled)
+## Enabled ArchUnit rules
 
-These slices of the step-2 target already hold; the tests run so ArchUnit is wired:
+The step-2 target for `io.spring.core..` is fully enforced:
 
-- `core_must_not_depend_on_mybatis`
-- `core_must_not_depend_on_jackson`
+- `core_must_not_depend_on_mybatis` (held before step 2)
+- `core_must_not_depend_on_jackson` (held before step 2)
+- `v1_core_must_not_depend_on_spring` (step 2)
+- `v2_core_must_not_depend_on_root_util` (step 2)
+
+Still `@Disabled`, each citing its id: V3 (optional), V4, V5, V6 (×2), V7.
 
 ---
 
