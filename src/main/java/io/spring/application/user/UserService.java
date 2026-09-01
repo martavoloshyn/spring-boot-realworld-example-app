@@ -1,5 +1,9 @@
 package io.spring.application.user;
 
+import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.port.in.UserPort;
+import io.spring.core.user.FollowRelation;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import java.lang.annotation.Retention;
@@ -16,7 +20,7 @@ import org.springframework.validation.annotation.Validated;
 
 @Service
 @Validated
-public class UserService {
+public class UserService implements UserPort {
   private UserRepository userRepository;
   private String defaultImage;
   private PasswordEncoder passwordEncoder;
@@ -31,6 +35,7 @@ public class UserService {
     this.passwordEncoder = passwordEncoder;
   }
 
+  @Override
   public User createUser(@Valid RegisterParam registerParam) {
     User user =
         new User(
@@ -43,6 +48,15 @@ public class UserService {
     return user;
   }
 
+  @Override
+  public User login(String email, String password) {
+    return userRepository
+        .findByEmail(email)
+        .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+        .orElseThrow(InvalidAuthenticationException::new);
+  }
+
+  @Override
   public void updateUser(@Valid UpdateUserCommand command) {
     User user = command.getTargetUser();
     UpdateUserParam updateUserParam = command.getParam();
@@ -53,6 +67,24 @@ public class UserService {
         updateUserParam.getBio(),
         updateUserParam.getImage());
     userRepository.save(user);
+  }
+
+  @Override
+  public void follow(String username, User follower) {
+    User target =
+        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    userRepository.saveRelation(new FollowRelation(follower.getId(), target.getId()));
+  }
+
+  @Override
+  public void unfollow(String username, User follower) {
+    User target =
+        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    FollowRelation relation =
+        userRepository
+            .findRelation(follower.getId(), target.getId())
+            .orElseThrow(ResourceNotFoundException::new);
+    userRepository.removeRelation(relation);
   }
 }
 

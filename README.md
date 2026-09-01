@@ -17,6 +17,7 @@ The GraphQL schema is https://github.com/gothinkster/spring-boot-realworld-examp
 ![](graphql-schema.png)
 
 And this implementation is using [dgs-framework](https://github.com/Netflix/dgs-framework) which is a quite new java graphql server framework.
+
 # How it works
 
 The application uses Spring Boot (Web, Mybatis).
@@ -45,6 +46,8 @@ It uses a ~~H2 in-memory database~~ sqlite database (for easy local test without
 # Getting started
 
 You'll need Java 11 installed.
+
+The Gradle wrapper is 7.4, which cannot run on JDK 18 or newer — it fails at configuration time with `Unsupported class file major version`. If your default JDK is newer, point `JAVA_HOME` at a JDK 11 or 17 installation before running any Gradle command.
 
     ./gradlew bootRun
 
@@ -75,6 +78,8 @@ The repository contains a lot of test cases to cover both api test and repositor
 Use spotless for code format.
 
     ./gradlew spotlessJavaApply
+
+This one needs JDK 11. google-java-format reaches into the JDK compiler internals, so on JDK 17 the task dies with `InvocationTargetException` unless the build passes the matching `--add-exports` flags.
 
 # Help
 

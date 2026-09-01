@@ -2,7 +2,7 @@ package io.spring.core.article;
 
 import static java.util.stream.Collectors.toList;
 
-import io.spring.Util;
+import io.spring.core.shared.Strings;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -49,16 +49,16 @@ public class Article {
   }
 
   public void update(String title, String description, String body) {
-    if (!Util.isEmpty(title)) {
+    if (!Strings.isEmpty(title)) {
       this.title = title;
       this.slug = toSlug(title);
       this.updatedAt = new DateTime();
     }
-    if (!Util.isEmpty(description)) {
+    if (!Strings.isEmpty(description)) {
       this.description = description;
       this.updatedAt = new DateTime();
     }
-    if (!Util.isEmpty(body)) {
+    if (!Strings.isEmpty(body)) {
       this.body = body;
       this.updatedAt = new DateTime();
     }
