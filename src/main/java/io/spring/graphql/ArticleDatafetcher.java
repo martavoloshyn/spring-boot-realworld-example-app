@@ -18,7 +18,6 @@ import io.spring.application.DateTimeCursor;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
 import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
 import io.spring.graphql.DgsConstants.ARTICLEPAYLOAD;
 import io.spring.graphql.DgsConstants.COMMENT;
 import io.spring.graphql.DgsConstants.PROFILE;
@@ -37,7 +36,6 @@ import org.joda.time.format.ISODateTimeFormat;
 public class ArticleDatafetcher {
 
   private ArticleQueryService articleQueryService;
-  private UserRepository userRepository;
 
   @DgsQuery(field = QUERY.Feed)
   public DataFetcherResult<ArticlesConnection> getFeed(
@@ -97,21 +95,17 @@ public class ArticleDatafetcher {
     }
 
     Profile profile = dfe.getSource();
-    User target =
-        userRepository
-            .findByUsername(profile.getUsername())
-            .orElseThrow(ResourceNotFoundException::new);
 
     CursorPager<ArticleData> articles;
     if (first != null) {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              target,
+              profile.getUsername(),
               new CursorPageParameter<>(DateTimeCursor.parse(after), first, Direction.NEXT));
     } else {
       articles =
           articleQueryService.findUserFeedWithCursor(
-              target,
+              profile.getUsername(),
               new CursorPageParameter<>(DateTimeCursor.parse(before), last, Direction.PREV));
     }
     graphql.relay.PageInfo pageInfo = buildArticlePageInfo(articles);
