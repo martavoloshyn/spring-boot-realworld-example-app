@@ -101,7 +101,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V5 — Adapters orchestrate writes; see architecture/violations.md")
   @Test
   void v5_web_adapters_must_not_depend_on_repositories_or_authorization() {
     noClasses()

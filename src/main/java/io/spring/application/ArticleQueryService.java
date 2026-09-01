@@ -2,10 +2,12 @@ package io.spring.application;
 
 import static java.util.stream.Collectors.toList;
 
+import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
 import io.spring.application.data.ArticleFavoriteCount;
 import io.spring.core.user.User;
+import io.spring.core.user.UserRepository;
 import io.spring.infrastructure.mybatis.readservice.ArticleFavoritesReadService;
 import io.spring.infrastructure.mybatis.readservice.ArticleReadService;
 import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
@@ -26,6 +28,7 @@ public class ArticleQueryService {
   private ArticleReadService articleReadService;
   private UserRelationshipQueryService userRelationshipQueryService;
   private ArticleFavoritesReadService articleFavoritesReadService;
+  private UserRepository userRepository;
 
   public Optional<ArticleData> findById(String id, User user) {
     ArticleData articleData = articleReadService.findById(id);
@@ -75,6 +78,13 @@ public class ArticleQueryService {
 
       return new CursorPager<>(articles, page.getDirection(), hasExtra);
     }
+  }
+
+  public CursorPager<ArticleData> findUserFeedWithCursor(
+      String username, CursorPageParameter<DateTime> page) {
+    User target =
+        userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+    return findUserFeedWithCursor(target, page);
   }
 
   public CursorPager<ArticleData> findUserFeedWithCursor(
