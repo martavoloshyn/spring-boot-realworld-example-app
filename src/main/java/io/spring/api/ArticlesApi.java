@@ -2,8 +2,8 @@ package io.spring.api;
 
 import io.spring.application.ArticleQueryService;
 import io.spring.application.Page;
-import io.spring.application.article.ArticleCommandService;
 import io.spring.application.article.NewArticleParam;
+import io.spring.application.port.in.ArticlePort;
 import io.spring.core.article.Article;
 import io.spring.core.user.User;
 import java.util.HashMap;
@@ -22,13 +22,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "/articles")
 @AllArgsConstructor
 public class ArticlesApi {
-  private ArticleCommandService articleCommandService;
+  private ArticlePort articlePort;
   private ArticleQueryService articleQueryService;
 
   @PostMapping
   public ResponseEntity createArticle(
       @Valid @RequestBody NewArticleParam newArticleParam, @AuthenticationPrincipal User user) {
-    Article article = articleCommandService.createArticle(newArticleParam, user);
+    Article article = articlePort.createArticle(newArticleParam, user);
     return ResponseEntity.ok(
         new HashMap<String, Object>() {
           {

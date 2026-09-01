@@ -1,12 +1,8 @@
 package io.spring.api;
 
-import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.data.ArticleData;
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import io.spring.core.favorite.ArticleFavorite;
-import io.spring.core.favorite.ArticleFavoriteRepository;
+import io.spring.application.port.in.ArticlePort;
 import io.spring.core.user.User;
 import java.util.HashMap;
 import lombok.AllArgsConstructor;
@@ -22,31 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "articles/{slug}/favorite")
 @AllArgsConstructor
 public class ArticleFavoriteApi {
-  private ArticleFavoriteRepository articleFavoriteRepository;
-  private ArticleRepository articleRepository;
+  private ArticlePort articlePort;
   private ArticleQueryService articleQueryService;
 
   @PostMapping
   public ResponseEntity favoriteArticle(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
-    Article article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    ArticleFavorite articleFavorite = new ArticleFavorite(article.getId(), user.getId());
-    articleFavoriteRepository.save(articleFavorite);
+    articlePort.favorite(slug, user);
     return responseArticleData(articleQueryService.findBySlug(slug, user).get());
   }
 
   @DeleteMapping
   public ResponseEntity unfavoriteArticle(
       @PathVariable("slug") String slug, @AuthenticationPrincipal User user) {
-    Article article =
-        articleRepository.findBySlug(slug).orElseThrow(ResourceNotFoundException::new);
-    articleFavoriteRepository
-        .find(article.getId(), user.getId())
-        .ifPresent(
-            favorite -> {
-              articleFavoriteRepository.remove(favorite);
-            });
+    articlePort.unfavorite(slug, user);
     return responseArticleData(articleQueryService.findBySlug(slug, user).get());
   }
 

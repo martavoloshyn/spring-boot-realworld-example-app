@@ -3,9 +3,9 @@ package io.spring.api;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
 import io.spring.application.data.UserWithToken;
+import io.spring.application.port.in.UserPort;
 import io.spring.application.user.UpdateUserCommand;
 import io.spring.application.user.UpdateUserParam;
-import io.spring.application.user.UserService;
 import io.spring.core.user.User;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CurrentUserApi {
 
   private UserQueryService userQueryService;
-  private UserService userService;
+  private UserPort userPort;
 
   @GetMapping
   public ResponseEntity currentUser(
@@ -43,7 +43,7 @@ public class CurrentUserApi {
       @RequestHeader("Authorization") String token,
       @Valid @RequestBody UpdateUserParam updateUserParam) {
 
-    userService.updateUser(new UpdateUserCommand(currentUser, updateUserParam));
+    userPort.updateUser(new UpdateUserCommand(currentUser, updateUserParam));
     UserData userData = userQueryService.findById(currentUser.getId()).get();
     return ResponseEntity.ok(userResponse(new UserWithToken(userData, token.split(" ")[1])));
   }
