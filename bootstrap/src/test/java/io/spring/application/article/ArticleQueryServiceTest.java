@@ -227,4 +227,39 @@ public class ArticleQueryServiceTest extends DbTestBase {
     ArticleData articleData = anotherUserFeed.getArticleDatas().get(0);
     Assertions.assertTrue(articleData.getProfileData().isFollowing());
   }
+
+  @Test
+  public void should_get_empty_user_feed_when_followed_author_has_no_article() {
+    User authorWithoutArticle = new User("empty@email.com", "empty", "123", "", "");
+    userRepository.save(authorWithoutArticle);
+    userRepository.saveRelation(new FollowRelation(user.getId(), authorWithoutArticle.getId()));
+
+    ArticleDataList userFeed = queryService.findUserFeed(user, new Page());
+    Assertions.assertEquals(userFeed.getCount(), 0);
+    Assertions.assertEquals(userFeed.getArticleDatas().size(), 0);
+  }
+
+  @Test
+  public void should_get_empty_user_feed_when_offset_is_beyond_the_last_article() {
+    User anotherUser = new User("other@email.com", "other", "123", "", "");
+    userRepository.save(anotherUser);
+    userRepository.saveRelation(new FollowRelation(anotherUser.getId(), user.getId()));
+
+    ArticleDataList userFeed = queryService.findUserFeed(anotherUser, new Page(2, 10));
+    Assertions.assertEquals(userFeed.getCount(), 1);
+    Assertions.assertEquals(userFeed.getArticleDatas().size(), 0);
+  }
+
+  @Test
+  public void should_get_empty_user_feed_by_cursor_when_followed_author_has_no_article() {
+    User authorWithoutArticle = new User("empty@email.com", "empty", "123", "", "");
+    userRepository.save(authorWithoutArticle);
+    userRepository.saveRelation(new FollowRelation(user.getId(), authorWithoutArticle.getId()));
+
+    CursorPager<ArticleData> userFeed =
+        queryService.findUserFeedWithCursor(
+            user, new CursorPageParameter<>(null, 20, Direction.NEXT));
+    Assertions.assertEquals(userFeed.getData().size(), 0);
+    Assertions.assertNull(userFeed.getStartCursor());
+  }
 }

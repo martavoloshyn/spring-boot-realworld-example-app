@@ -133,6 +133,10 @@ public class ArticleQueryService {
   }
 
   private void fillExtraInfo(List<ArticleData> articles, User currentUser) {
+    // The lookups below render `id in (...)`, which is invalid SQL for an empty list.
+    if (articles.isEmpty()) {
+      return;
+    }
     setFavoriteCount(articles);
     if (currentUser != null) {
       setIsFavorite(articles, currentUser);
