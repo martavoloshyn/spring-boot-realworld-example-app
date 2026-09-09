@@ -6,11 +6,11 @@ import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
 import io.spring.application.data.ArticleFavoriteCount;
+import io.spring.application.port.out.ArticleFavoritesReadPort;
+import io.spring.application.port.out.ArticleReadPort;
+import io.spring.application.port.out.UserRelationshipQueryPort;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.mybatis.readservice.ArticleFavoritesReadService;
-import io.spring.infrastructure.mybatis.readservice.ArticleReadService;
-import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,9 +25,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 public class ArticleQueryService {
-  private ArticleReadService articleReadService;
-  private UserRelationshipQueryService userRelationshipQueryService;
-  private ArticleFavoritesReadService articleFavoritesReadService;
+  private ArticleReadPort articleReadService;
+  private UserRelationshipQueryPort userRelationshipQueryService;
+  private ArticleFavoritesReadPort articleFavoritesReadService;
   private UserRepository userRepository;
 
   public Optional<ArticleData> findById(String id, User user) {

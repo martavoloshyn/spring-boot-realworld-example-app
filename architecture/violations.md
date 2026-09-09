@@ -57,27 +57,27 @@ Assignment does not require removing Lombok. Lombok annotations are source-reten
 
 ## V4 — Application → infrastructure (CQRS reads are not ports)
 
-**Status:** open  
-**ArchUnit:** `v4_application_must_not_depend_on_infrastructure_or_mybatis`
+**Status:** fixed (step 4)  
+**ArchUnit:** `v4_application_must_not_depend_on_infrastructure_or_mybatis` — **enabled**
 
-`*QueryService` types inject MyBatis `@Mapper`s from `io.spring.infrastructure.mybatis.readservice`. This is the “left JPA/MyBatis coupling intact” failure if you only rename packages.
+Query services inject application query ports (`io.spring.application.port.out`). MyBatis `@Mapper`s in `io.spring.infrastructure.mybatis.readservice` implement those ports and keep `@Param` plus XML namespaces.
 
-| Application type | MyBatis mappers |
+| Application type | Query port |
 | --- | --- |
-| `ArticleQueryService` | `ArticleReadService`, `ArticleFavoritesReadService`, `UserRelationshipQueryService` |
-| `CommentQueryService` | `CommentReadService`, `UserRelationshipQueryService` |
-| `ProfileQueryService` | `UserReadService`, `UserRelationshipQueryService` |
-| `UserQueryService` | `UserReadService` |
-| `TagsQueryService` | `TagReadService` |
+| `ArticleQueryService` | `ArticleReadPort`, `ArticleFavoritesReadPort`, `UserRelationshipQueryPort` |
+| `CommentQueryService` | `CommentReadPort`, `UserRelationshipQueryPort` |
+| `ProfileQueryService` | `UserReadPort`, `UserRelationshipQueryPort` |
+| `UserQueryService` | `UserReadPort` |
+| `TagsQueryService` | `TagReadPort` |
 
-Target (enabled in step 4): `io.spring.application..` must not depend on `io.spring.infrastructure..` or `org.mybatis..`.
+`io.spring.application..` no longer depends on `io.spring.infrastructure..` or `org.mybatis..`.
 
 ---
 
 ## V5 — Adapters orchestrate writes (no inbound ports)
 
-**Status:** open  
-**ArchUnit:** `v5_web_adapters_must_not_depend_on_repositories_or_authorization`
+**Status:** fixed (step 3)  
+**ArchUnit:** `v5_web_adapters_must_not_depend_on_repositories_or_authorization` — **enabled**
 
 REST/GraphQL call repositories and build aggregates instead of inbound ports. Authorization is invoked in the adapter, not a use case.
 
@@ -99,30 +99,21 @@ Target (step 3): no `*Repository` / `AuthorizationService` on controllers and mu
 
 ## V6 — Auth/token treated as domain
 
-**Status:** open  
-**ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security`
+**Status:** fixed (step 4)  
+**ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security` — **enabled**
 
-- `JwtService` still lives in `core` (`src/main/java/io/spring/core/service/JwtService.java`); its `@Service` annotation is gone since step 2 (V1), but the type itself must move to adapter-web. Implementation: `io.spring.infrastructure.service.DefaultJwtService`.
-- `PasswordEncoder` (Spring Security) is injected into application `UserService`.
-- Domain `User` is the Spring Security **principal**. That is OK only if Security types stay in adapters (`@AuthenticationPrincipal`, `JwtTokenFilter`, `SecurityUtil`). `User` itself has no Security imports.
-
-Target (steps 4–5): JWT issue/parse in adapter-web; `PasswordHasher` port in domain; no Spring Security types in `core` or application use cases.
+- `JwtService` and `DefaultJwtService` live in adapter-web (`io.spring.api.security`). Domain has no token types.
+- `PasswordHasher` is a domain outbound port (`io.spring.core.user.PasswordHasher`). `BCryptPasswordHasher` wraps `PasswordEncoder` in adapter-web. `UserService` depends on the port.
+- Domain `User` is still the Spring Security principal. Security types stay in adapters (`@AuthenticationPrincipal`, `JwtTokenFilter`, `SecurityUtil`). Step 5 still owns filter/principal wiring.
 
 ---
 
 ## V7 — Reverse edge: persistence knows application DTOs
 
-**Status:** open (direction to invert; mapping to DTOs stays)  
-**ArchUnit:** `v7_application_must_not_import_mybatis_mappers`
+**Status:** fixed (step 4)  
+**ArchUnit:** `v7_application_must_not_import_mybatis_mappers` — **enabled**
 
-MyBatis read XML / `@Mapper`s map into `io.spring.application.data.*` (and paging types in `io.spring.application`):
-
-- Mapper interfaces: `io.spring.infrastructure.mybatis.readservice.*`
-- XML: `src/main/resources/mapper/TransferData.xml`, `UserReadService.xml`, `ArticleReadService.xml`, …
-
-**Acceptable later:** query ports live in **application** and persistence **implements** them (XML may still materialize `ArticleData` / `CommentData` / …).
-
-**Not acceptable:** those mappers imported *from* application (today’s V4). Closing V7 means the application → mapper import is gone; it does **not** mean XML must stop mapping to application DTOs.
+Query ports live in application. Persistence implements them. XML may still materialize `ArticleData` / `CommentData` / paging types. Application no longer imports mapper types.
 
 ---
 
@@ -136,14 +127,17 @@ MyBatis read XML / `@Mapper`s map into `io.spring.application.data.*` (and pagin
 
 ## Enabled ArchUnit rules
 
-The step-2 target for `io.spring.core..` is fully enforced:
-
 - `core_must_not_depend_on_mybatis` (held before step 2)
 - `core_must_not_depend_on_jackson` (held before step 2)
 - `v1_core_must_not_depend_on_spring` (step 2)
 - `v2_core_must_not_depend_on_root_util` (step 2)
+- `v4_application_must_not_depend_on_infrastructure_or_mybatis` (step 4)
+- `v5_web_adapters_must_not_depend_on_repositories_or_authorization` (step 3)
+- `v6_jwt_must_not_live_in_core` (step 4)
+- `v6_application_must_not_depend_on_spring_security` (step 4)
+- `v7_application_must_not_import_mybatis_mappers` (step 4)
 
-Still `@Disabled`, each citing its id: V3 (optional), V4, V5, V6 (×2), V7.
+Still `@Disabled`, citing its id: V3 (optional).
 
 ---
 

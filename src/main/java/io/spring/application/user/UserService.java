@@ -4,6 +4,7 @@ import io.spring.api.exception.InvalidAuthenticationException;
 import io.spring.api.exception.ResourceNotFoundException;
 import io.spring.application.port.in.UserPort;
 import io.spring.core.user.FollowRelation;
+import io.spring.core.user.PasswordHasher;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
 import java.lang.annotation.Retention;
@@ -14,7 +15,6 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -23,16 +23,16 @@ import org.springframework.validation.annotation.Validated;
 public class UserService implements UserPort {
   private UserRepository userRepository;
   private String defaultImage;
-  private PasswordEncoder passwordEncoder;
+  private PasswordHasher passwordHasher;
 
   @Autowired
   public UserService(
       UserRepository userRepository,
       @Value("${image.default}") String defaultImage,
-      PasswordEncoder passwordEncoder) {
+      PasswordHasher passwordHasher) {
     this.userRepository = userRepository;
     this.defaultImage = defaultImage;
-    this.passwordEncoder = passwordEncoder;
+    this.passwordHasher = passwordHasher;
   }
 
   @Override
@@ -41,7 +41,7 @@ public class UserService implements UserPort {
         new User(
             registerParam.getEmail(),
             registerParam.getUsername(),
-            passwordEncoder.encode(registerParam.getPassword()),
+            passwordHasher.hash(registerParam.getPassword()),
             "",
             defaultImage);
     userRepository.save(user);
@@ -52,7 +52,7 @@ public class UserService implements UserPort {
   public User login(String email, String password) {
     return userRepository
         .findByEmail(email)
-        .filter(user -> passwordEncoder.matches(password, user.getPassword()))
+        .filter(user -> passwordHasher.matches(password, user.getPassword()))
         .orElseThrow(InvalidAuthenticationException::new);
   }
 
