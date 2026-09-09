@@ -9,14 +9,15 @@ import static org.mockito.Mockito.when;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
+import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.api.security.JwtService;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
-import io.spring.application.user.UserService;
-import io.spring.core.service.JwtService;
+import io.spring.application.port.in.UserPort;
+import io.spring.application.port.out.UserReadPort;
 import io.spring.core.user.User;
 import io.spring.core.user.UserRepository;
-import io.spring.infrastructure.mybatis.readservice.UserReadService;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -44,9 +45,9 @@ public class UsersApiTest {
 
   @MockBean private JwtService jwtService;
 
-  @MockBean private UserReadService userReadService;
+  @MockBean private UserReadPort userReadService;
 
-  @MockBean private UserService userService;
+  @MockBean private UserPort userPort;
 
   @Autowired private PasswordEncoder passwordEncoder;
 
@@ -68,7 +69,7 @@ public class UsersApiTest {
     UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
     when(userReadService.findById(any())).thenReturn(userData);
 
-    when(userService.createUser(any())).thenReturn(user);
+    when(userPort.createUser(any())).thenReturn(user);
 
     when(userRepository.findByUsername(eq(username))).thenReturn(Optional.empty());
     when(userRepository.findByEmail(eq(email))).thenReturn(Optional.empty());
@@ -88,7 +89,7 @@ public class UsersApiTest {
         .body("user.image", equalTo(defaultAvatar))
         .body("user.token", equalTo("123"));
 
-    verify(userService).createUser(any());
+    verify(userPort).createUser(any());
   }
 
   @Test
@@ -198,8 +199,7 @@ public class UsersApiTest {
     User user = new User(email, username, passwordEncoder.encode(password), "", defaultAvatar);
     UserData userData = new UserData("123", email, username, "", defaultAvatar);
 
-    when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-    when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+    when(userPort.login(eq(email), eq(password))).thenReturn(user);
     when(userReadService.findById(eq(user.getId()))).thenReturn(userData);
     when(jwtService.toToken(any())).thenReturn("123");
 
@@ -241,8 +241,8 @@ public class UsersApiTest {
     User user = new User(email, username, password, "", defaultAvatar);
     UserData userData = new UserData(user.getId(), email, username, "", defaultAvatar);
 
-    when(userRepository.findByEmail(eq(email))).thenReturn(Optional.of(user));
-    when(userReadService.findByUsername(eq(username))).thenReturn(userData);
+    when(userPort.login(eq(email), eq("123123")))
+        .thenThrow(new InvalidAuthenticationException());
 
     Map<String, Object> param =
         new HashMap<String, Object>() {

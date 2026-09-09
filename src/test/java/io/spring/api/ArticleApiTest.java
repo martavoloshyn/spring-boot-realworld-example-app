@@ -5,19 +5,20 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
 import io.spring.TestHelper;
+import io.spring.api.exception.NoAuthorizationException;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
-import io.spring.application.article.ArticleCommandService;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
+import io.spring.application.port.in.ArticlePort;
 import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
 import io.spring.core.user.User;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -41,9 +42,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
   @MockBean private ArticleQueryService articleQueryService;
 
-  @MockBean private ArticleRepository articleRepository;
-
-  @MockBean ArticleCommandService articleCommandService;
+  @MockBean private ArticlePort articlePort;
 
   @Override
   @BeforeEach
@@ -100,9 +99,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
     ArticleData updatedArticleData =
         TestHelper.getArticleDataFromArticleAndUser(updatedArticle, user);
 
-    when(articleRepository.findBySlug(eq(originalArticle.getSlug())))
-        .thenReturn(Optional.of(originalArticle));
-    when(articleCommandService.updateArticle(eq(originalArticle), any()))
+    when(articlePort.update(eq(originalArticle.getSlug()), any(), eq(user)))
         .thenReturn(updatedArticle);
     when(articleQueryService.findBySlug(eq(updatedArticle.getSlug()), eq(user)))
         .thenReturn(Optional.of(updatedArticleData));
@@ -151,9 +148,8 @@ public class ArticleApiTest extends TestWithCurrentUser {
                 anotherUser.getImage(),
                 false));
 
-    when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
-    when(articleQueryService.findBySlug(eq(article.getSlug()), eq(user)))
-        .thenReturn(Optional.of(articleData));
+    when(articlePort.update(eq(article.getSlug()), any(), eq(user)))
+        .thenThrow(new NoAuthorizationException());
 
     given()
         .contentType("application/json")
@@ -173,7 +169,6 @@ public class ArticleApiTest extends TestWithCurrentUser {
 
     Article article =
         new Article(title, description, body, Arrays.asList("java", "spring", "jpg"), user.getId());
-    when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
 
     given()
         .header("Authorization", "Token " + token)
@@ -182,7 +177,7 @@ public class ArticleApiTest extends TestWithCurrentUser {
         .then()
         .statusCode(204);
 
-    verify(articleRepository).remove(eq(article));
+    verify(articlePort).delete(eq(article.getSlug()), eq(user));
   }
 
   @Test
@@ -197,7 +192,9 @@ public class ArticleApiTest extends TestWithCurrentUser {
         new Article(
             title, description, body, Arrays.asList("java", "spring", "jpg"), anotherUser.getId());
 
-    when(articleRepository.findBySlug(eq(article.getSlug()))).thenReturn(Optional.of(article));
+    doThrow(new NoAuthorizationException())
+        .when(articlePort)
+        .delete(eq(article.getSlug()), eq(user));
     given()
         .header("Authorization", "Token " + token)
         .when()
