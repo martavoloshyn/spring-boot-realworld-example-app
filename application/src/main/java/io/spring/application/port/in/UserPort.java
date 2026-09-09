@@ -2,7 +2,7 @@ package io.spring.application.port.in;
 
 import io.spring.application.user.RegisterParam;
 import io.spring.application.user.UpdateUserCommand;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import javax.validation.Valid;
 
 public interface UserPort {

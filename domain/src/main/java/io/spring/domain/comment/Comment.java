@@ -1,4 +1,4 @@
-package io.spring.core.comment;
+package io.spring.domain.comment;
 
 import java.util.UUID;
 import lombok.EqualsAndHashCode;

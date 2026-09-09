@@ -1,7 +1,7 @@
 package io.spring.infrastructure.comment;
 
-import io.spring.core.comment.Comment;
-import io.spring.core.comment.CommentRepository;
+import io.spring.domain.comment.Comment;
+import io.spring.domain.comment.CommentRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisCommentRepository;
 import java.util.Optional;

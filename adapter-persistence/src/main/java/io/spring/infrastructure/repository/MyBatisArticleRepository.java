@@ -1,8 +1,8 @@
 package io.spring.infrastructure.repository;
 
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import io.spring.core.article.Tag;
+import io.spring.domain.article.Article;
+import io.spring.domain.article.ArticleRepository;
+import io.spring.domain.article.Tag;
 import io.spring.infrastructure.mybatis.mapper.ArticleMapper;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;

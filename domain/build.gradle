@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'joda-time:joda-time:2.10.13'
+    compileOnly 'org.projectlombok:lombok:1.18.22'
+    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

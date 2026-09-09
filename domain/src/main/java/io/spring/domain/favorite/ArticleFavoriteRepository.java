@@ -1,4 +1,4 @@
-package io.spring.core.favorite;
+package io.spring.domain.favorite;
 
 import java.util.Optional;
 

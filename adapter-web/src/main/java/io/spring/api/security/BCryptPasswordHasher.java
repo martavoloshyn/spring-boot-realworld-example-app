@@ -1,6 +1,6 @@
 package io.spring.api.security;
 
-import io.spring.core.user.PasswordHasher;
+import io.spring.domain.user.PasswordHasher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class BCryptPasswordHasher implements PasswordHasher {

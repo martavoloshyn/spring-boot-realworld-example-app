@@ -2,6 +2,7 @@ package io.spring.api.exception;
 
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
+import io.spring.application.exception.InvalidAuthenticationException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package io.spring.core.shared;
+package io.spring.domain.shared;
 
 public class Strings {
   private Strings() {}

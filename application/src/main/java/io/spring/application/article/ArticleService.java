@@ -1,14 +1,14 @@
 package io.spring.application.article;
 
-import io.spring.api.exception.NoAuthorizationException;
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.NoAuthorizationException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.port.in.ArticlePort;
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import io.spring.core.favorite.ArticleFavorite;
-import io.spring.core.favorite.ArticleFavoriteRepository;
-import io.spring.core.service.AuthorizationService;
-import io.spring.core.user.User;
+import io.spring.domain.article.Article;
+import io.spring.domain.article.ArticleRepository;
+import io.spring.domain.favorite.ArticleFavorite;
+import io.spring.domain.favorite.ArticleFavoriteRepository;
+import io.spring.domain.service.AuthorizationService;
+import io.spring.domain.user.User;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

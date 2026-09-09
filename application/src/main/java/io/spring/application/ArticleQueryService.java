@@ -2,15 +2,15 @@ package io.spring.application;
 
 import static java.util.stream.Collectors.toList;
 
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ArticleDataList;
 import io.spring.application.data.ArticleFavoriteCount;
 import io.spring.application.port.out.ArticleFavoritesReadPort;
 import io.spring.application.port.out.ArticleReadPort;
 import io.spring.application.port.out.UserRelationshipQueryPort;
-import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
+import io.spring.domain.user.User;
+import io.spring.domain.user.UserRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

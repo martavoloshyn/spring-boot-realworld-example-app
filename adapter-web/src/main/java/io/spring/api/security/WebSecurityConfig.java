@@ -2,7 +2,7 @@ package io.spring.api.security;
 
 import static java.util.Arrays.asList;
 
-import io.spring.core.user.PasswordHasher;
+import io.spring.domain.user.PasswordHasher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

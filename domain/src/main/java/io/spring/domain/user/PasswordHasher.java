@@ -1,4 +1,4 @@
-package io.spring.core.user;
+package io.spring.domain.user;
 
 public interface PasswordHasher {
   String hash(String rawPassword);

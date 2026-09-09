@@ -1,4 +1,4 @@
-package io.spring.core.article;
+package io.spring.domain.article;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

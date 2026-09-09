@@ -1,16 +1,16 @@
 package io.spring.application.comment;
 
-import io.spring.api.exception.NoAuthorizationException;
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.NoAuthorizationException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.CommentQueryService;
 import io.spring.application.data.CommentData;
 import io.spring.application.port.in.CommentPort;
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import io.spring.core.comment.Comment;
-import io.spring.core.comment.CommentRepository;
-import io.spring.core.service.AuthorizationService;
-import io.spring.core.user.User;
+import io.spring.domain.article.Article;
+import io.spring.domain.article.ArticleRepository;
+import io.spring.domain.comment.Comment;
+import io.spring.domain.comment.CommentRepository;
+import io.spring.domain.service.AuthorizationService;
+import io.spring.domain.user.User;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

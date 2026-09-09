@@ -1,7 +1,7 @@
 package io.spring.application.article;
 
 import io.spring.application.ArticleQueryService;
-import io.spring.core.article.Article;
+import io.spring.domain.article.Article;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;

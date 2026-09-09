@@ -1,4 +1,4 @@
-package io.spring.core.article;
+package io.spring.domain.article;
 
 import java.util.Optional;
 

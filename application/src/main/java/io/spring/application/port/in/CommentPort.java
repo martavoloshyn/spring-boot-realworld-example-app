@@ -1,8 +1,8 @@
 package io.spring.application.port.in;
 
 import io.spring.application.data.CommentData;
-import io.spring.core.comment.Comment;
-import io.spring.core.user.User;
+import io.spring.domain.comment.Comment;
+import io.spring.domain.user.User;
 import java.util.List;
 
 public interface CommentPort {

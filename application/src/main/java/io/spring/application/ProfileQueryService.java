@@ -4,7 +4,7 @@ import io.spring.application.data.ProfileData;
 import io.spring.application.data.UserData;
 import io.spring.application.port.out.UserReadPort;
 import io.spring.application.port.out.UserRelationshipQueryPort;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

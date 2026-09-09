@@ -2,7 +2,7 @@
 
 Inventory of hexagonal dependency-rule breaks. **Do not “fix” them in this step.**
 
-Shared memory with `architecture/hexagonal-plan.md`. Later agents mark an id **fixed** only when the matching ArchUnit test in `src/test/java/io/spring/architecture/HexagonalArchitectureTest.java` is **enabled** (`@Disabled` removed) and `./gradlew test` is green.
+Shared memory with `architecture/hexagonal-plan.md`. Later agents mark an id **fixed** only when the matching ArchUnit test in `bootstrap/src/test/java/io/spring/architecture/HexagonalArchitectureTest.java` is **enabled** (`@Disabled` removed) and `./gradlew test` is green.
 
 Status values: `open` · `optional` · `fixed`.
 
@@ -22,7 +22,7 @@ Spring stereotypes on `io.spring.core` interfaces:
 
 Already annotation-free (not this id): `ArticleRepository`, `CommentRepository`, `ArticleFavoriteRepository`.
 
-`io.spring.core..` no longer depends on `org.springframework..`. `JwtService` still *lives* in `core` — that is V6, closed in step 4.
+`io.spring.domain..` (formerly `io.spring.core..`) no longer depends on `org.springframework..`. `JwtService` still *lives* in `core` — that is V6, closed in step 4. Step 6 renamed the package.
 
 ---
 
@@ -33,7 +33,7 @@ Already annotation-free (not this id): `ArticleRepository`, `CommentRepository`,
 
 `User` and `Article` imported root `io.spring.Util`.
 
-`isEmpty` moved into the domain as `io.spring.core.shared.Strings`; `User` and `Article` call `Strings.isEmpty`. `io.spring.Util` had no other callers and was deleted, so the bootstrap package no longer holds domain logic.
+`isEmpty` moved into the domain as `io.spring.domain.shared.Strings`; `User` and `Article` call `Strings.isEmpty`. `io.spring.Util` had no other callers and was deleted, so the bootstrap package no longer holds domain logic.
 
 ---
 
@@ -46,12 +46,12 @@ Assignment does not require removing Lombok. Lombok annotations are source-reten
 
 | Entity | File |
 | --- | --- |
-| `User` | `src/main/java/io/spring/core/user/User.java` |
-| `FollowRelation` | `src/main/java/io/spring/core/user/FollowRelation.java` |
-| `Article` | `src/main/java/io/spring/core/article/Article.java` |
-| `Tag` | `src/main/java/io/spring/core/article/Tag.java` |
-| `Comment` | `src/main/java/io/spring/core/comment/Comment.java` |
-| `ArticleFavorite` | `src/main/java/io/spring/core/favorite/ArticleFavorite.java` |
+| `User` | `domain/src/main/java/io/spring/domain/user/User.java` |
+| `FollowRelation` | `domain/src/main/java/io/spring/domain/user/FollowRelation.java` |
+| `Article` | `domain/src/main/java/io/spring/domain/article/Article.java` |
+| `Tag` | `domain/src/main/java/io/spring/domain/article/Tag.java` |
+| `Comment` | `domain/src/main/java/io/spring/domain/comment/Comment.java` |
+| `ArticleFavorite` | `domain/src/main/java/io/spring/domain/favorite/ArticleFavorite.java` |
 
 ---
 
@@ -103,10 +103,10 @@ Target (step 3): no `*Repository` / `AuthorizationService` on controllers and mu
 **ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security`, `v6_security_types_only_in_inbound_adapters` — **enabled**
 
 - `JwtService` and `DefaultJwtService` live in adapter-web (`io.spring.api.security`). Domain has no token types.
-- `PasswordHasher` is a domain outbound port (`io.spring.core.user.PasswordHasher`). `BCryptPasswordHasher` wraps `PasswordEncoder` in adapter-web. `UserService` depends on the port.
+- `PasswordHasher` is a domain outbound port (`io.spring.domain.user.PasswordHasher`). `BCryptPasswordHasher` wraps `PasswordEncoder` in adapter-web. `UserService` depends on the port.
 - Domain `User` is still the Spring Security principal. `JwtTokenFilter` parses the `Authorization` header, loads the user through `UserRepository` (allowed on an inbound adapter), and puts `User` on the `SecurityContext`. REST reads it back with `@AuthenticationPrincipal`, GraphQL through `SecurityUtil`. `WebSecurityConfig` keeps its matchers.
 
-Step 5 closed the remaining clause, Security types only in inbound adapters, with `v6_security_types_only_in_inbound_adapters`. That rule confines `org.springframework.security..` to `io.spring.api..` and `io.spring.graphql..`, so `core`, `application`, `infrastructure`, and the bootstrap root cannot reference Security types. Step 5 changed no production code, because step 4 already left the call graph in this shape.
+Step 5 closed the remaining clause, Security types only in inbound adapters, with `v6_security_types_only_in_inbound_adapters`. That rule confines `org.springframework.security..` to `io.spring.api..` and `io.spring.graphql..`, so `domain`, `application`, `infrastructure`, and the bootstrap root cannot reference Security types. Step 5 changed no production code, because step 4 already left the call graph in this shape.
 
 The rule was proven non-vacuous before it was kept: a temporary `SecurityContextHolder` call added to `MyBatisUserRepository` made it the only failing rule, which also shows it guards `io.spring.infrastructure`, a package no other enabled rule covers. The temporary call was reverted.
 
@@ -142,7 +142,17 @@ Query ports live in application. Persistence implements them. XML may still mate
 - `v6_security_types_only_in_inbound_adapters` (step 5)
 - `v7_application_must_not_import_mybatis_mappers` (step 4)
 
-Still `@Disabled`, citing its id: V3 (optional).
+Still `@Disabled`, citing its id: V3 (optional). Domain rules match `io.spring.domain..`.
+
+---
+
+## Step 6 — package and Gradle modules
+
+No new violation ids. Couplings were already gone. This step renamed `io.spring.core` to `io.spring.domain` and split the single Gradle project into `:domain`, `:application`, `:adapter-persistence`, `:adapter-web`, and `:bootstrap`.
+
+`:domain` compile classpath is joda-time plus Lombok. It does not declare Spring, MyBatis, Jackson, or Security.
+
+Java packages for persistence (`io.spring.infrastructure`) and web (`io.spring.api`, `io.spring.graphql`) stayed. Use-case exceptions moved to `io.spring.application.exception` so `:application` does not depend on `:adapter-web`. Tests live in `:bootstrap`. Enabled ArchUnit rules stay enabled. V3 stays optional.
 
 ---
 

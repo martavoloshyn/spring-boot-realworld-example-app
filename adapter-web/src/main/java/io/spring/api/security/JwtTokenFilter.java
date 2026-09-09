@@ -1,6 +1,6 @@
 package io.spring.api.security;
 
-import io.spring.core.user.UserRepository;
+import io.spring.domain.user.UserRepository;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;

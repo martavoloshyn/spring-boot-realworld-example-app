@@ -1,6 +1,6 @@
-package io.spring.core.user;
+package io.spring.domain.user;
 
-import io.spring.core.shared.Strings;
+import io.spring.domain.shared.Strings;
 import java.util.UUID;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

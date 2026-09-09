@@ -9,7 +9,7 @@ import graphql.execution.DataFetcherResult;
 import graphql.relay.DefaultConnectionCursor;
 import graphql.relay.DefaultPageInfo;
 import graphql.schema.DataFetchingEnvironment;
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.CursorPageParameter;
 import io.spring.application.CursorPager;
@@ -17,7 +17,7 @@ import io.spring.application.CursorPager.Direction;
 import io.spring.application.DateTimeCursor;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import io.spring.graphql.DgsConstants.ARTICLEPAYLOAD;
 import io.spring.graphql.DgsConstants.COMMENT;
 import io.spring.graphql.DgsConstants.PROFILE;
@@ -293,7 +293,7 @@ public class ArticleDatafetcher {
 
   @DgsData(parentType = ARTICLEPAYLOAD.TYPE_NAME, field = ARTICLEPAYLOAD.Article)
   public DataFetcherResult<Article> getArticle(DataFetchingEnvironment dfe) {
-    io.spring.core.article.Article article = dfe.getLocalContext();
+    io.spring.domain.article.Article article = dfe.getLocalContext();
 
     User current = SecurityUtil.getCurrentUser().orElse(null);
     ArticleData articleData =

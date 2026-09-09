@@ -31,7 +31,7 @@ public class HexagonalArchitectureTest {
   void core_must_not_depend_on_mybatis() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("org.mybatis..")
@@ -43,7 +43,7 @@ public class HexagonalArchitectureTest {
   void core_must_not_depend_on_jackson() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("com.fasterxml.jackson..")
@@ -55,7 +55,7 @@ public class HexagonalArchitectureTest {
   void v1_core_must_not_depend_on_spring() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("org.springframework..")
@@ -67,7 +67,7 @@ public class HexagonalArchitectureTest {
   void v2_core_must_not_depend_on_root_util() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .haveFullyQualifiedName("io.spring.Util")
@@ -80,7 +80,7 @@ public class HexagonalArchitectureTest {
   void v3_core_must_not_depend_on_lombok() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("lombok..")
@@ -118,7 +118,7 @@ public class HexagonalArchitectureTest {
   void v6_jwt_must_not_live_in_core() {
     noClasses()
         .that()
-        .resideInAPackage("io.spring.core..")
+        .resideInAPackage("io.spring.domain..")
         .should()
         .haveSimpleName("JwtService")
         .because("V6 — JWT issue/parse belongs in adapter-web, not domain")

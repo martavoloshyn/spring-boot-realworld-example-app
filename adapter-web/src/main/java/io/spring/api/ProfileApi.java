@@ -1,10 +1,10 @@
 package io.spring.api;
 
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
 import io.spring.application.port.in.UserPort;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.HashMap;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

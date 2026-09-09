@@ -1,12 +1,12 @@
 package io.spring.api;
 
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.article.UpdateArticleParam;
 import io.spring.application.data.ArticleData;
 import io.spring.application.port.in.ArticlePort;
-import io.spring.core.article.Article;
-import io.spring.core.user.User;
+import io.spring.domain.article.Article;
+import io.spring.domain.user.User;
 import java.util.HashMap;
 import java.util.Map;
 import javax.validation.Valid;

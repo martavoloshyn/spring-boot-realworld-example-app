@@ -2,8 +2,8 @@ package io.spring.application.port.in;
 
 import io.spring.application.article.NewArticleParam;
 import io.spring.application.article.UpdateArticleParam;
-import io.spring.core.article.Article;
-import io.spring.core.user.User;
+import io.spring.domain.article.Article;
+import io.spring.domain.user.User;
 import javax.validation.Valid;
 
 public interface ArticlePort {

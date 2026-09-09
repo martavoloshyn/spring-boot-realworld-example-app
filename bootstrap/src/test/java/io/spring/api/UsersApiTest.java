@@ -9,15 +9,15 @@ import static org.mockito.Mockito.when;
 
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
-import io.spring.api.exception.InvalidAuthenticationException;
+import io.spring.application.exception.InvalidAuthenticationException;
 import io.spring.api.security.JwtService;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
 import io.spring.application.port.in.UserPort;
 import io.spring.application.port.out.UserReadPort;
-import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
+import io.spring.domain.user.User;
+import io.spring.domain.user.UserRepository;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

@@ -1,10 +1,10 @@
 package io.spring.infrastructure.article;
 
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
-import io.spring.core.article.Tag;
-import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
+import io.spring.domain.article.Article;
+import io.spring.domain.article.ArticleRepository;
+import io.spring.domain.article.Tag;
+import io.spring.domain.user.User;
+import io.spring.domain.user.UserRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import io.spring.infrastructure.repository.MyBatisUserRepository;

@@ -1,8 +1,8 @@
-package io.spring.core.article;
+package io.spring.domain.article;
 
 import static java.util.stream.Collectors.toList;
 
-import io.spring.core.shared.Strings;
+import io.spring.domain.shared.Strings;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;

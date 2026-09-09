@@ -1,7 +1,7 @@
 package io.spring.application.port.out;
 
 import io.spring.application.data.ArticleFavoriteCount;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.List;
 import java.util.Set;
 

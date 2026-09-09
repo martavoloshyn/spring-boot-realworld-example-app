@@ -12,7 +12,7 @@ import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
 import io.spring.application.port.in.UserPort;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

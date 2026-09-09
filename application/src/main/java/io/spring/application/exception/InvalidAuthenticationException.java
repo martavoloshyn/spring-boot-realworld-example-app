@@ -1,4 +1,4 @@
-package io.spring.api.exception;
+package io.spring.application.exception;
 
 public class InvalidAuthenticationException extends RuntimeException {
 

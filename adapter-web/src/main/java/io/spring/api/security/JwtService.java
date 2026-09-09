@@ -1,6 +1,6 @@
 package io.spring.api.security;
 
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.Optional;
 
 public interface JwtService {

@@ -1,12 +1,12 @@
 package io.spring.application.user;
 
-import io.spring.api.exception.InvalidAuthenticationException;
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.InvalidAuthenticationException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.application.port.in.UserPort;
-import io.spring.core.user.FollowRelation;
-import io.spring.core.user.PasswordHasher;
-import io.spring.core.user.User;
-import io.spring.core.user.UserRepository;
+import io.spring.domain.user.FollowRelation;
+import io.spring.domain.user.PasswordHasher;
+import io.spring.domain.user.User;
+import io.spring.domain.user.UserRepository;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import javax.validation.Constraint;

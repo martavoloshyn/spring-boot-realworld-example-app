@@ -2,7 +2,7 @@ package io.spring.infrastructure.service;
 
 import io.spring.api.security.DefaultJwtService;
 import io.spring.api.security.JwtService;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

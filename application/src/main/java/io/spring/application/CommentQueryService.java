@@ -3,7 +3,7 @@ package io.spring.application;
 import io.spring.application.data.CommentData;
 import io.spring.application.port.out.CommentReadPort;
 import io.spring.application.port.out.UserRelationshipQueryPort;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -1,8 +1,8 @@
 package io.spring.application.tag;
 
 import io.spring.application.TagsQueryService;
-import io.spring.core.article.Article;
-import io.spring.core.article.ArticleRepository;
+import io.spring.domain.article.Article;
+import io.spring.domain.article.ArticleRepository;
 import io.spring.infrastructure.DbTestBase;
 import io.spring.infrastructure.repository.MyBatisArticleRepository;
 import java.util.Arrays;

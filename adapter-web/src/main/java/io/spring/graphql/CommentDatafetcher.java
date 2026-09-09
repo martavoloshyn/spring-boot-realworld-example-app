@@ -14,7 +14,7 @@ import io.spring.application.CursorPager.Direction;
 import io.spring.application.DateTimeCursor;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.CommentData;
-import io.spring.core.user.User;
+import io.spring.domain.user.User;
 import io.spring.graphql.DgsConstants.ARTICLE;
 import io.spring.graphql.DgsConstants.COMMENTPAYLOAD;
 import io.spring.graphql.types.Article;

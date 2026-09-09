@@ -4,7 +4,7 @@ import com.netflix.graphql.dgs.DgsComponent;
 import com.netflix.graphql.dgs.DgsData;
 import graphql.execution.DataFetcherResult;
 import graphql.schema.DataFetchingEnvironment;
-import io.spring.api.exception.ResourceNotFoundException;
+import io.spring.application.exception.ResourceNotFoundException;
 import io.spring.api.security.JwtService;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
@@ -33,7 +33,7 @@ public class MeDatafetcher {
         || authentication.getPrincipal() == null) {
       return null;
     }
-    io.spring.core.user.User user = (io.spring.core.user.User) authentication.getPrincipal();
+    io.spring.domain.user.User user = (io.spring.domain.user.User) authentication.getPrincipal();
     UserData userData =
         userQueryService.findById(user.getId()).orElseThrow(ResourceNotFoundException::new);
     UserWithToken userWithToken = new UserWithToken(userData, authorization.split(" ")[1]);
@@ -49,7 +49,7 @@ public class MeDatafetcher {
   @DgsData(parentType = USERPAYLOAD.TYPE_NAME, field = USERPAYLOAD.User)
   public DataFetcherResult<User> getUserPayloadUser(
       DataFetchingEnvironment dataFetchingEnvironment) {
-    io.spring.core.user.User user = dataFetchingEnvironment.getLocalContext();
+    io.spring.domain.user.User user = dataFetchingEnvironment.getLocalContext();
     User result =
         User.newBuilder()
             .email(user.getEmail())
