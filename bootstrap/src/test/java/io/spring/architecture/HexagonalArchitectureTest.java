@@ -8,13 +8,9 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-/**
- * Target hexagonal rules. Disabled tests cite a violation id in {@code architecture/violations.md}.
- * Enabling a test is the proof that id is gone.
- */
+/** ArchUnit rules that keep hexagonal dependency direction. */
 public class HexagonalArchitectureTest {
 
   private static JavaClasses classes;
@@ -28,7 +24,7 @@ public class HexagonalArchitectureTest {
   }
 
   @Test
-  void core_must_not_depend_on_mybatis() {
+  void domain_must_not_depend_on_mybatis() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.domain..")
@@ -40,7 +36,7 @@ public class HexagonalArchitectureTest {
   }
 
   @Test
-  void core_must_not_depend_on_jackson() {
+  void domain_must_not_depend_on_jackson() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.domain..")
@@ -52,56 +48,43 @@ public class HexagonalArchitectureTest {
   }
 
   @Test
-  void v1_core_must_not_depend_on_spring() {
+  void domain_must_not_depend_on_spring() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("org.springframework..")
-        .because("V1 — Spring must not appear on domain ports")
+        .because("Spring must not appear on domain ports")
         .check(classes);
   }
 
   @Test
-  void v2_core_must_not_depend_on_root_util() {
+  void domain_must_not_depend_on_root_util() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.domain..")
         .should()
         .dependOnClassesThat()
         .haveFullyQualifiedName("io.spring.Util")
-        .because("V2 — entities must not import io.spring.Util")
-        .check(classes);
-  }
-
-  @Disabled("V3 — Lombok on domain entities (optional); see architecture/violations.md")
-  @Test
-  void v3_core_must_not_depend_on_lombok() {
-    noClasses()
-        .that()
-        .resideInAPackage("io.spring.domain..")
-        .should()
-        .dependOnClassesThat()
-        .resideInAPackage("lombok..")
-        .because("V3 — optional purity: domain entities without Lombok")
+        .because("entities must not import io.spring.Util")
         .check(classes);
   }
 
   @Test
-  void v4_application_must_not_depend_on_infrastructure_or_mybatis() {
+  void application_must_not_depend_on_infrastructure_or_mybatis() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.application..")
         .should()
         .dependOnClassesThat()
         .resideInAnyPackage("io.spring.infrastructure..", "org.mybatis..")
-        .because("V4 — query services must depend on ports, not MyBatis mappers")
+        .because("query services must depend on ports, not MyBatis mappers")
         .check(classes);
   }
 
   @Test
-  void v5_web_adapters_must_not_depend_on_repositories_or_authorization() {
+  void web_adapters_must_not_depend_on_repositories_or_authorization() {
     noClasses()
         .that()
         .resideInAnyPackage("io.spring.api..", "io.spring.graphql..")
@@ -110,35 +93,35 @@ public class HexagonalArchitectureTest {
         .should()
         .dependOnClassesThat(
             simpleNameEndingWith("Repository").or(simpleName("AuthorizationService")))
-        .because("V5 — controllers/mutations must call inbound ports, not repositories")
+        .because("controllers/mutations must call inbound ports, not repositories")
         .check(classes);
   }
 
   @Test
-  void v6_jwt_must_not_live_in_core() {
+  void jwt_must_not_live_in_domain() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.domain..")
         .should()
         .haveSimpleName("JwtService")
-        .because("V6 — JWT issue/parse belongs in adapter-web, not domain")
+        .because("JWT issue/parse belongs in adapter-web, not domain")
         .check(classes);
   }
 
   @Test
-  void v6_application_must_not_depend_on_spring_security() {
+  void application_must_not_depend_on_spring_security() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.application..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("org.springframework.security..")
-        .because("V6 — application use cases must depend on PasswordHasher, not PasswordEncoder")
+        .because("application use cases must depend on PasswordHasher, not PasswordEncoder")
         .check(classes);
   }
 
   @Test
-  void v6_security_types_only_in_inbound_adapters() {
+  void security_types_only_in_inbound_adapters() {
     noClasses()
         .that()
         .resideOutsideOfPackage("io.spring.api..")
@@ -147,19 +130,19 @@ public class HexagonalArchitectureTest {
         .should()
         .dependOnClassesThat()
         .resideInAPackage("org.springframework.security..")
-        .because("V6 — Spring Security types belong only in inbound adapters")
+        .because("Spring Security types belong only in inbound adapters")
         .check(classes);
   }
 
   @Test
-  void v7_application_must_not_import_mybatis_mappers() {
+  void application_must_not_import_mybatis_mappers() {
     noClasses()
         .that()
         .resideInAPackage("io.spring.application..")
         .should()
         .dependOnClassesThat()
         .resideInAPackage("io.spring.infrastructure.mybatis..")
-        .because("V7 — application must not import persistence mappers")
+        .because("application must not import persistence mappers")
         .check(classes);
   }
 

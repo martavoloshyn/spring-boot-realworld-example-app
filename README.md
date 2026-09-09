@@ -28,10 +28,11 @@ The application uses Spring Boot (Web, Mybatis).
 
 And the code is organized as this:
 
-1. `api` is the web layer implemented by Spring MVC
-2. `core` is the business model including entities and services
-3. `application` is the high-level services for querying the data transfer objects
-4. `infrastructure`  contains all the implementation classes as the technique details
+1. `adapter-web` is the inbound adapters (REST, GraphQL, JWT/security)
+2. `domain` is the business model: entities and write-side ports
+3. `application` is use cases, inbound ports, and query services (CQRS read model)
+4. `adapter-persistence` is MyBatis repositories and read mappers
+5. `bootstrap` wires the modules and runs Flyway
 
 # Security
 
