@@ -141,6 +141,11 @@ Query ports live in application. Persistence implements them. XML may still mate
 - `v6_application_must_not_depend_on_spring_security` (step 4)
 - `v6_security_types_only_in_inbound_adapters` (step 5)
 - `v7_application_must_not_import_mybatis_mappers` (step 4)
+- `domain_must_not_depend_on_servlet` (step 7)
+- `domain_must_not_depend_on_spring_security` (step 7)
+- `domain_must_not_depend_on_fasterxml` (step 7)
+- `domain_must_not_depend_outward` (step 7)
+- `application_must_not_depend_on_adapter_packages` (step 7)
 
 Still `@Disabled`, citing its id: V3 (optional). Domain rules match `io.spring.domain..`.
 
@@ -153,6 +158,12 @@ No new violation ids. Couplings were already gone. This step renamed `io.spring.
 `:domain` compile classpath is joda-time plus Lombok. It does not declare Spring, MyBatis, Jackson, or Security.
 
 Java packages for persistence (`io.spring.infrastructure`) and web (`io.spring.api`, `io.spring.graphql`) stayed. Use-case exceptions moved to `io.spring.application.exception` so `:application` does not depend on `:adapter-web`. Tests live in `:bootstrap`. Enabled ArchUnit rules stay enabled. V3 stays optional.
+
+---
+
+## Step 7 — dependency-direction report
+
+No new violation ids. All target ArchUnit rules are enabled except optional V3. `architecture/dependency-report.md` records how to run ArchUnit, `:domain:dependencies`, and the port → adapter map.
 
 ---
 

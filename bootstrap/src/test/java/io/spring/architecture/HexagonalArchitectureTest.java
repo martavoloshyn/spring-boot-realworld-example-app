@@ -162,4 +162,68 @@ public class HexagonalArchitectureTest {
         .because("V7 — application must not import persistence mappers")
         .check(classes);
   }
+
+  @Test
+  void domain_must_not_depend_on_servlet() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.spring.domain..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("javax.servlet..")
+        .because("domain must not depend on the servlet API")
+        .check(classes);
+  }
+
+  @Test
+  void domain_must_not_depend_on_spring_security() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.spring.domain..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("org.springframework.security..")
+        .because("domain must not depend on Spring Security")
+        .check(classes);
+  }
+
+  @Test
+  void domain_must_not_depend_on_fasterxml() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.spring.domain..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("com.fasterxml..")
+        .because("domain must not depend on Jackson / FasterXML")
+        .check(classes);
+  }
+
+  @Test
+  void domain_must_not_depend_outward() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.spring.domain..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAnyPackage(
+            "io.spring.application..",
+            "io.spring.infrastructure..",
+            "io.spring.api..",
+            "io.spring.graphql..")
+        .because("domain must not depend on application or adapters")
+        .check(classes);
+  }
+
+  @Test
+  void application_must_not_depend_on_adapter_packages() {
+    noClasses()
+        .that()
+        .resideInAPackage("io.spring.application..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAnyPackage("io.spring.api..", "io.spring.graphql..", "io.spring.infrastructure..")
+        .because("application must not depend on adapter packages")
+        .check(classes);
+  }
 }
