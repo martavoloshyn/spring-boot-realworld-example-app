@@ -3,12 +3,13 @@ package io.spring.infrastructure.mybatis.readservice;
 import io.spring.application.CursorPageParameter;
 import io.spring.application.Page;
 import io.spring.application.data.ArticleData;
+import io.spring.application.port.out.ArticleReadPort;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 @Mapper
-public interface ArticleReadService {
+public interface ArticleReadService extends ArticleReadPort {
   ArticleData findById(@Param("id") String id);
 
   ArticleData findBySlug(@Param("slug") String slug);

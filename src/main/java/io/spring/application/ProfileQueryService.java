@@ -2,9 +2,9 @@ package io.spring.application;
 
 import io.spring.application.data.ProfileData;
 import io.spring.application.data.UserData;
+import io.spring.application.port.out.UserReadPort;
+import io.spring.application.port.out.UserRelationshipQueryPort;
 import io.spring.core.user.User;
-import io.spring.infrastructure.mybatis.readservice.UserReadService;
-import io.spring.infrastructure.mybatis.readservice.UserRelationshipQueryService;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ProfileQueryService {
-  private UserReadService userReadService;
-  private UserRelationshipQueryService userRelationshipQueryService;
+  private UserReadPort userReadService;
+  private UserRelationshipQueryPort userRelationshipQueryService;
 
   public Optional<ProfileData> findByUsername(String username, User currentUser) {
     UserData userData = userReadService.findByUsername(username);
