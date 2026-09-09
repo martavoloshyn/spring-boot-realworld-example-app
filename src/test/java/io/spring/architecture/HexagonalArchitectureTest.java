@@ -88,7 +88,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V4 — Application → infrastructure; see architecture/violations.md")
   @Test
   void v4_application_must_not_depend_on_infrastructure_or_mybatis() {
     noClasses()
@@ -115,7 +114,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V6 — Auth/token treated as domain; see architecture/violations.md")
   @Test
   void v6_jwt_must_not_live_in_core() {
     noClasses()
@@ -127,7 +125,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V6 — PasswordEncoder in application; see architecture/violations.md")
   @Test
   void v6_application_must_not_depend_on_spring_security() {
     noClasses()
@@ -140,7 +137,6 @@ public class HexagonalArchitectureTest {
         .check(classes);
   }
 
-  @Disabled("V7 — Query mappers imported from application; see architecture/violations.md")
   @Test
   void v7_application_must_not_import_mybatis_mappers() {
     noClasses()
