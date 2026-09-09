@@ -12,9 +12,9 @@ import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
-import io.spring.application.article.ArticleCommandService;
 import io.spring.application.data.ArticleData;
 import io.spring.application.data.ProfileData;
+import io.spring.application.port.in.ArticlePort;
 import io.spring.core.article.Article;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
 
   @MockBean private ArticleQueryService articleQueryService;
 
-  @MockBean private ArticleCommandService articleCommandService;
+  @MockBean private ArticlePort articlePort;
 
   @Override
   @BeforeEach
@@ -68,7 +68,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
             tagList,
             new ProfileData("userid", user.getUsername(), user.getBio(), user.getImage(), false));
 
-    when(articleCommandService.createArticle(any(), any()))
+    when(articlePort.createArticle(any(), any()))
         .thenReturn(new Article(title, description, body, tagList, user.getId()));
 
     when(articleQueryService.findBySlug(eq(Article.toSlug(title)), any()))
@@ -91,7 +91,7 @@ public class ArticlesApiTest extends TestWithCurrentUser {
         .body("article.author.username", equalTo(user.getUsername()))
         .body("article.author.id", equalTo(null));
 
-    verify(articleCommandService).createArticle(any(), any());
+    verify(articlePort).createArticle(any(), any());
   }
 
   @Test
