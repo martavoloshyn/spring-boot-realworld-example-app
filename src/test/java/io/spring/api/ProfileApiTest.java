@@ -11,7 +11,7 @@ import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ProfileQueryService;
 import io.spring.application.data.ProfileData;
-import io.spring.core.user.FollowRelation;
+import io.spring.application.port.in.UserPort;
 import io.spring.core.user.User;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +30,8 @@ public class ProfileApiTest extends TestWithCurrentUser {
   @Autowired private MockMvc mvc;
 
   @MockBean private ProfileQueryService profileQueryService;
+
+  @MockBean private UserPort userPort;
 
   private ProfileData profileData;
 
@@ -72,14 +74,11 @@ public class ProfileApiTest extends TestWithCurrentUser {
         .prettyPeek()
         .then()
         .statusCode(200);
-    verify(userRepository).saveRelation(new FollowRelation(user.getId(), anotherUser.getId()));
+    verify(userPort).follow(eq(anotherUser.getUsername()), eq(user));
   }
 
   @Test
   public void should_unfollow_user_success() throws Exception {
-    FollowRelation followRelation = new FollowRelation(user.getId(), anotherUser.getId());
-    when(userRepository.findRelation(eq(user.getId()), eq(anotherUser.getId())))
-        .thenReturn(Optional.of(followRelation));
     when(profileQueryService.findByUsername(eq(profileData.getUsername()), eq(user)))
         .thenReturn(Optional.of(profileData));
 
@@ -91,6 +90,6 @@ public class ProfileApiTest extends TestWithCurrentUser {
         .then()
         .statusCode(200);
 
-    verify(userRepository).removeRelation(eq(followRelation));
+    verify(userPort).unfollow(eq(anotherUser.getUsername()), eq(user));
   }
 }

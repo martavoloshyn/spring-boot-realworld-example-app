@@ -11,9 +11,8 @@ import io.spring.JacksonCustomizations;
 import io.spring.api.security.WebSecurityConfig;
 import io.spring.application.ArticleQueryService;
 import io.spring.application.Page;
-import io.spring.application.article.ArticleCommandService;
 import io.spring.application.data.ArticleDataList;
-import io.spring.core.article.ArticleRepository;
+import io.spring.application.port.in.ArticlePort;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(ArticlesApi.class)
 @Import({WebSecurityConfig.class, JacksonCustomizations.class})
 public class ListArticleApiTest extends TestWithCurrentUser {
-  @MockBean private ArticleRepository articleRepository;
+  @MockBean private ArticlePort articlePort;
 
   @MockBean private ArticleQueryService articleQueryService;
-
-  @MockBean private ArticleCommandService articleCommandService;
 
   @Autowired private MockMvc mvc;
 
