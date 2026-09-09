@@ -17,6 +17,7 @@ The GraphQL schema is https://github.com/gothinkster/spring-boot-realworld-examp
 ![](graphql-schema.png)
 
 And this implementation is using [dgs-framework](https://github.com/Netflix/dgs-framework) which is a quite new java graphql server framework.
+
 # How it works
 
 The application uses Spring Boot (Web, Mybatis).
@@ -27,10 +28,11 @@ The application uses Spring Boot (Web, Mybatis).
 
 And the code is organized as this:
 
-1. `api` is the web layer implemented by Spring MVC
-2. `core` is the business model including entities and services
-3. `application` is the high-level services for querying the data transfer objects
-4. `infrastructure`  contains all the implementation classes as the technique details
+1. `adapter-web` is the inbound adapters (REST, GraphQL, JWT/security)
+2. `domain` is the business model: entities and write-side ports
+3. `application` is use cases, inbound ports, and query services (CQRS read model)
+4. `adapter-persistence` is MyBatis repositories and read mappers
+5. `bootstrap` wires the modules and runs Flyway
 
 # Security
 
@@ -45,6 +47,8 @@ It uses a ~~H2 in-memory database~~ sqlite database (for easy local test without
 # Getting started
 
 You'll need Java 11 installed.
+
+The Gradle wrapper is 7.4, which cannot run on JDK 18 or newer — it fails at configuration time with `Unsupported class file major version`. If your default JDK is newer, point `JAVA_HOME` at a JDK 11 or 17 installation before running any Gradle command.
 
     ./gradlew bootRun
 
@@ -75,6 +79,8 @@ The repository contains a lot of test cases to cover both api test and repositor
 Use spotless for code format.
 
     ./gradlew spotlessJavaApply
+
+This one needs JDK 11. google-java-format reaches into the JDK compiler internals, so on JDK 17 the task dies with `InvocationTargetException` unless the build passes the matching `--add-exports` flags.
 
 # Help
 
