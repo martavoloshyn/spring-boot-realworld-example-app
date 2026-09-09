@@ -3,12 +3,12 @@ package io.spring.api;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import io.spring.api.security.JwtService;
 import io.spring.application.UserQueryService;
 import io.spring.application.data.UserData;
 import io.spring.application.data.UserWithToken;
 import io.spring.application.port.in.UserPort;
 import io.spring.application.user.RegisterParam;
-import io.spring.core.service.JwtService;
 import io.spring.core.user.User;
 import java.util.HashMap;
 import java.util.Map;
