@@ -138,6 +138,20 @@ public class HexagonalArchitectureTest {
   }
 
   @Test
+  void v6_security_types_only_in_inbound_adapters() {
+    noClasses()
+        .that()
+        .resideOutsideOfPackage("io.spring.api..")
+        .and()
+        .resideOutsideOfPackage("io.spring.graphql..")
+        .should()
+        .dependOnClassesThat()
+        .resideInAPackage("org.springframework.security..")
+        .because("V6 — Spring Security types belong only in inbound adapters")
+        .check(classes);
+  }
+
+  @Test
   void v7_application_must_not_import_mybatis_mappers() {
     noClasses()
         .that()

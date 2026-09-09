@@ -99,12 +99,16 @@ Target (step 3): no `*Repository` / `AuthorizationService` on controllers and mu
 
 ## V6 — Auth/token treated as domain
 
-**Status:** fixed (step 4)  
-**ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security` — **enabled**
+**Status:** fixed (steps 4 and 5)  
+**ArchUnit:** `v6_jwt_must_not_live_in_core`, `v6_application_must_not_depend_on_spring_security`, `v6_security_types_only_in_inbound_adapters` — **enabled**
 
 - `JwtService` and `DefaultJwtService` live in adapter-web (`io.spring.api.security`). Domain has no token types.
 - `PasswordHasher` is a domain outbound port (`io.spring.core.user.PasswordHasher`). `BCryptPasswordHasher` wraps `PasswordEncoder` in adapter-web. `UserService` depends on the port.
-- Domain `User` is still the Spring Security principal. Security types stay in adapters (`@AuthenticationPrincipal`, `JwtTokenFilter`, `SecurityUtil`). Step 5 still owns filter/principal wiring.
+- Domain `User` is still the Spring Security principal. `JwtTokenFilter` parses the `Authorization` header, loads the user through `UserRepository` (allowed on an inbound adapter), and puts `User` on the `SecurityContext`. REST reads it back with `@AuthenticationPrincipal`, GraphQL through `SecurityUtil`. `WebSecurityConfig` keeps its matchers.
+
+Step 5 closed the remaining clause, Security types only in inbound adapters, with `v6_security_types_only_in_inbound_adapters`. That rule confines `org.springframework.security..` to `io.spring.api..` and `io.spring.graphql..`, so `core`, `application`, `infrastructure`, and the bootstrap root cannot reference Security types. Step 5 changed no production code, because step 4 already left the call graph in this shape.
+
+The rule was proven non-vacuous before it was kept: a temporary `SecurityContextHolder` call added to `MyBatisUserRepository` made it the only failing rule, which also shows it guards `io.spring.infrastructure`, a package no other enabled rule covers. The temporary call was reverted.
 
 ---
 
@@ -135,6 +139,7 @@ Query ports live in application. Persistence implements them. XML may still mate
 - `v5_web_adapters_must_not_depend_on_repositories_or_authorization` (step 3)
 - `v6_jwt_must_not_live_in_core` (step 4)
 - `v6_application_must_not_depend_on_spring_security` (step 4)
+- `v6_security_types_only_in_inbound_adapters` (step 5)
 - `v7_application_must_not_import_mybatis_mappers` (step 4)
 
 Still `@Disabled`, citing its id: V3 (optional).
